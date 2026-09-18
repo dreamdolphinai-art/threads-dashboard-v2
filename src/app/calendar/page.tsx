@@ -65,7 +65,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     setLoading(true)
-    const dateStrs = days.map((d)
+   const dateStrs = days.map((d) =>`${d.getFullYear()}-${String d.getMonth()+1 padStart(2,'0')
     Promise.all(
       dateStrs.map((d) => fetch(`/api/lucky?date=${d}`).then((r) => r.json()) as Promise<DayInfo>)
     ).then((results) => {
