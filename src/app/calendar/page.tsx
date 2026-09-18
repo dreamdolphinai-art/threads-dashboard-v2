@@ -65,7 +65,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     setLoading(true)
-    const dateStrs = days.map((d) => d.toISOString().split('T')[0])
+    const dateStrs = days.map((d)
     Promise.all(
       dateStrs.map((d) => fetch(`/api/lucky?date=${d}`).then((r) => r.json()) as Promise<DayInfo>)
     ).then((results) => {
@@ -153,10 +153,10 @@ export default function CalendarPage() {
           <div className="grid grid-cols-7">
             {blanks.map((_, i) => <div key={`b${i}`} className="min-h-[80px] border-r border-b border-gray-100" />)}
             {days.map((d) => {
-              const dateStr = d.toISOString().split('T')[0]
+               const dateStrs = days.map((d)
               const info = dayInfos[dateStr]
               const dow = d.getDay()
-              const isToday = dateStr === now.toISOString().split('T')[0]
+               const dateStrs = days.map((d)
 
               return (
                 <div
