@@ -153,7 +153,7 @@ export default function CalendarPage() {
           <div className="grid grid-cols-7">
             {blanks.map((_, i) => <div key={`b${i}`} className="min-h-[80px] border-r border-b border-gray-100" />)}
             {days.map((d) => {
-             
+             const dateStr = d.toLocaleDateString('sv-SE')
               const info = dayInfos[dateStr]
               const dow = d.getDay()
               
