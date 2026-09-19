@@ -62,10 +62,11 @@ export default function CalendarPage() {
   const [selected, setSelected] = useState<DayInfo | null>(null)
 
   const days = getDaysInMonth(year, month)
-
+　const dateStrs = days.map((d) =>d.toLocaleDateString('sv-SE'));
+  
   useEffect(() => {
     setLoading(true)
-   const dateStrs = days.map((d) =>`${d.getFullYear()}-${String d.getMonth()+1 padStart(2,'0')
+  const dateStrs = days.map((d) =>d.toLocaleDateString('sv-SE')); 
     Promise.all(
       dateStrs.map((d) => fetch(`/api/lucky?date=${d}`).then((r) => r.json()) as Promise<DayInfo>)
     ).then((results) => {
