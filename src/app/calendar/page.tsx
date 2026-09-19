@@ -62,8 +62,7 @@ export default function CalendarPage() {
   const [selected, setSelected] = useState<DayInfo | null>(null)
 
   const days = getDaysInMonth(year, month)
-　const dateStrs = days.map((d) =>d.toLocaleDateString('sv-SE'));
-  
+　
   useEffect(() => {
     setLoading(true)
   const dateStrs = days.map((d) =>d.toLocaleDateString('sv-SE')); 
