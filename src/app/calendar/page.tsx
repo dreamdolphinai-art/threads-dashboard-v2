@@ -156,7 +156,7 @@ export default function CalendarPage() {
              const dateStr = d.toLocaleDateString('sv-SE')
               const info = dayInfos[dateStr]
               const dow = d.getDay()
-              
+              const isToday = d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate()
 
               return (
                 <div
