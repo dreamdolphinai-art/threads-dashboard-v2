@@ -7,7 +7,7 @@ const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸']
 const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥']
 
 const REF_DATE_STR = '2023-01-01'
-const REF_IDX = 48 // 壬子
+const REF_IDX = 55 // 壬子
 
 function toJSTDateStr(date: Date): string {
   return date.toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' })
