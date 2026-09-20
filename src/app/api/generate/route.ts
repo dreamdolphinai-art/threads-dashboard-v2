@@ -54,20 +54,13 @@ function buildSystemPrompt(knowledge: string, s: Awaited<ReturnType<typeof getSe
 
 ${knowledge ? `=== 学習済み参考資料 ===\n${knowledge}\n\n` : ''}
 ルール:
-- 文字数: 150〜400文字
-- 読みやすい改行
-- 最終行に行動促進（フォロー・保存・コメントのいずれか1つ）
-- プロフィールの実績・数字を積極的に使う
-- 禁止: 根拠なき「絶対」「必ず」「100%」「保証」
-- 吉日の場合はその吉日の意味を自然に文章に取り込む
-- 全投稿は全て異なるフック・構成にする
-`
+母の手帳・記録に実際に書かれていない発言・思想・相談内容・出来事・筆跡・行動などを事実として創作せず、確認できない内容は母に帰属させず、娘自身の考えや一般的な表現として書く
 }
 
 export async function POST(req: Request) {
   const body = await req.json() as { startDate: string; days: number; postsPerDay?: number; theme?: string }
   const { startDate, days, theme } = body
-  const postsPerDay = Math.min(Math.max(body.postsPerDay ?? 7, 1), 10)
+  const postsPerDay = Math.min(Math.max(body.postsPerDay ?? 3, 1), 10)
 
   const [knowledge, appSettings] = await Promise.all([loadKnowledge(), getSettings()])
   const categories: string[] = JSON.parse(appSettings.categories)
