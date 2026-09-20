@@ -77,9 +77,10 @@ export async function POST(req: Request) {
 
     // 吉日情報を取得
     const lucky = getLuckyInfo(dateObj)
-    const luckyNote = lucky.types.length > 0
-      ? `\n【この日の吉日情報】${lucky.types.join('・')}（${lucky.description}）\n→ この吉日の意味・エネルギーを自然に投稿内容に反映させてください。`
-      : ''
+   const luckyNote = lucky.types.length > 0
+  ? `\n【この日の吉日情報】${lucky.types.join('・')}（${lucky.description}）\n`
+  : ''
+    
 
     const scheduleText = schedule.map((s, idx) => `${idx + 1}. ${s.time} [${s.category}]`).join('\n')
 
