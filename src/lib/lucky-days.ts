@@ -25,11 +25,47 @@ export function getKanshi(date: Date) {
 
 // ── 一粒万倍日: 月ごとの対応地支 ──
 const ICHIRYUU: Record<number, number[]> = {
-  1:[1,2], 2:[4,5], 3:[7,8], 4:[10,11],
-  5:[1,2], 6:[4,5], 7:[7,8], 8:[10,11],
-  9:[1,2], 10:[4,5], 11:[7,8], 12:[10,11],
+  1: [1,6],
+  2: [2,9],
+  3: [0,3],
+  4: [3,4],
+  5: [5,6],
+  6: [6,9],
+  7: [0,7],
+  8: [3,8],
+  9: [6,9],
+  10: [9,10],
+  11: [11,0],
+  12: [0,3],
+}
+const SEKKI_PARAMS: Record<number, [number, number]> = {
+  1: [6.3811, 0.242778],
+  2: [4.8693, 0.242713],
+  3: [6.3968, 0.242512],
+  4: [5.6280, 0.242231],
+  5: [6.3771, 0.241945],
+  6: [6.5733, 0.241731],
+  7: [8.0091, 0.241642],
+  8: [8.4102, 0.241703],
+  9: [8.5186, 0.241898],
+  10: [9.1414, 0.242179],
+  11: [8.2396, 0.242469],
+  12: [7.9152, 0.242689],
 }
 
+function getSekkiStartDay(year: number, month: number): number {
+  const [d, a] = SEKKI_PARAMS[month]
+  const y = month <= 2 ? year - 1 : year
+  return Math.floor(d + a * (y - 1900) - Math.floor((y - 1900) / 4))
+}
+
+function getSekkiMonth(date: Date): number {
+  const [year, month, day] = toJSTDateStr(date).split('-').map(Number)
+  const startDay = getSekkiStartDay(year, month)
+  const current = month === 1 ? 12 : month - 1
+  const previous = current === 1 ? 12 : current - 1
+  return day >= startDay ? current : previous
+}
 // ── 大明日: 60日サイクル中の23干支 ──
 // 甲子(0),乙丑(1),丙寅(2),丁卯(3),戊辰(4),己巳(5),庚午(6),辛未(7),壬申(8),癸酉(9),
 // 丙子(12),甲申(20),乙酉(21),甲午(30),乙未(31),丁酉(33),戊戌(34),己亥(35),庚子(36),壬寅(38),癸卯(39),丙午(42),丁未(43)
@@ -79,6 +115,7 @@ export type LuckyType =
 export function getLuckyTypes(date: Date): LuckyType[] {
   const { index, branch } = getKanshi(date)
   const month = new Date(toJSTDateStr(date)).getMonth() + 1
+  const sekkiMonth = getSekkiMonth(date)
   const types: LuckyType[] = []
 
   // ── 最強クラス ──
@@ -101,7 +138,7 @@ export function getLuckyTypes(date: Date): LuckyType[] {
   // ── 吉日クラス ──
 
   // 一粒万倍日
-  if ((ICHIRYUU[month] ?? []).includes(branch)) types.push('一粒万倍日')
+  if ((ICHIRYUU[sekkiMonth] ?? []).includes(branch)) types.push('一粒万倍日')
 
   // 大安（六曜・近似）
   if (getRokuyo(date) === 4) types.push('大安')
