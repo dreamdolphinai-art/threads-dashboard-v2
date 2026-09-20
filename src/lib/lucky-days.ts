@@ -1,3 +1,5 @@
+import kyurekiData from './kyureki-data.json'
+
 /**
  * 吉日計算ライブラリ
  * 干支サイクル基準: 2023/1/1 = 壬子 = index 48
@@ -80,29 +82,74 @@ const KAMIYOSHI = new Set([
   1,3,5,6,8,9,13,15,18,20,21,24,27,30,32,33,35,
   36,37,39,41,42,43,44,45,47,48,51,54,55,56,57,59
  ])
-// ── 六曜（大安）: 旧暦の月＋日から算出 ──
+// ── 六曜（大安）: 日本の旧暦データから算出 ──
 // 0=先勝 1=友引 2=先負 3=仏滅 4=大安 5=赤口
-function getRokuyo(date: Date): number {
-  const parts = new Intl.DateTimeFormat('en-US-u-ca-chinese', {
+
+const DAY_MS = 24 * 60 * 60 * 1000
+
+function isoToDayNumber(iso: string): number {
+  const [year, month, day] = iso.split('-').map(Number)
+  return Math.floor(Date.UTC(year, month - 1, day) / DAY_MS)
+}
+
+function dateToJstDayNumber(date: Date): number {
+  const parts = new Intl.DateTimeFormat('en-US', {
     timeZone: 'Asia/Tokyo',
+    year: 'numeric',
     month: 'numeric',
     day: 'numeric',
   }).formatToParts(date)
 
-  const lunarMonth = Number.parseInt(
-    parts.find((p) => p.type === 'month')?.value ?? '',
-    10
-  )
+  const year = Number(parts.find((p) => p.type === 'year')?.value)
+  const month = Number(parts.find((p) => p.type === 'month')?.value)
+  const day = Number(parts.find((p) => p.type === 'day')?.value)
 
-  const lunarDay = Number.parseInt(
-    parts.find((p) => p.type === 'day')?.value ?? '',
-    10
-  )
+  return Math.floor(Date.UTC(year, month - 1, day) / DAY_MS)
+}
 
-  if (!Number.isFinite(lunarMonth) || !Number.isFinite(lunarDay)) return -1
+function getRokuyo(date: Date): number {
+  const targetDay = dateToJstDayNumber(date)
+  const years = kyurekiData.years
 
-  const raw = (lunarMonth + lunarDay) % 6
-  return (raw + 4) % 6
+  for (let i = 0; i < years.length; i++) {
+    const yearInfo = years[i]
+    const startDay = isoToDayNumber(yearInfo.start)
+    const nextStartDay =
+      i + 1 < years.length
+        ? isoToDayNumber(years[i + 1].start)
+        : Number.POSITIVE_INFINITY
+
+    if (targetDay < startDay || targetDay >= nextStartDay) continue
+
+    let remaining = targetDay - startDay
+
+    for (let monthIndex = 0; monthIndex < yearInfo.sizeInfo.length; monthIndex++) {
+      const monthDays = yearInfo.sizeInfo[monthIndex] === '1' ? 30 : 29
+
+      if (remaining < monthDays) {
+        const lunarDay = remaining + 1
+
+        let lunarMonth: number
+
+        if (yearInfo.leapMonth === -1) {
+          lunarMonth = monthIndex + 1
+        } else if (monthIndex <= yearInfo.leapMonth) {
+          lunarMonth = monthIndex + 1
+        } else if (monthIndex === yearInfo.leapMonth + 1) {
+          lunarMonth = yearInfo.leapMonth + 1
+        } else {
+          lunarMonth = monthIndex
+        }
+
+        const raw = (lunarMonth + lunarDay) % 6
+        return (raw + 4) % 6
+      }
+
+      remaining -= monthDays
+    }
+  }
+
+  return -1
 }
 
 // ─────────────────────────────────────────
