@@ -197,7 +197,7 @@ else if (isWinter && index === 0) types.push('天赦日')   // 甲子
   // 一粒万倍日
   if ((ICHIRYUU[sekkiMonth] ?? []).includes(branch)) types.push('一粒万倍日')
 
-  // 大安（六曜・近似）
+  // 大安（六曜・日本旧暦ベース）
   if (getRokuyo(date) === 4) types.push('大安')
 
   // 大明日
