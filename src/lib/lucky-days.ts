@@ -175,14 +175,16 @@ export function getLuckyTypes(date: Date): LuckyType[] {
 
   // ── 最強クラス ──
 
-  // 天赦日（季節ごとに年6回前後）
-  const isSpring = month >= 3 && month <= 5
-  const isSummer = month >= 6 && month <= 8
-  const isAutumn = month >= 9 && month <= 11
-  if      (isSpring && index === 14) types.push('天赦日')   // 戊寅
-  else if (isSummer && index === 30) types.push('天赦日')   // 甲午
-  else if (isAutumn && index === 44) types.push('天赦日')   // 戊申
-  else if (!isSpring && !isSummer && !isAutumn && index === 0) types.push('天赦日') // 甲子
+ // 天赦日（季節ごとに年6回前後）
+const isSpring = sekkiMonth >= 1 && sekkiMonth <= 3
+const isSummer = sekkiMonth >= 4 && sekkiMonth <= 6
+const isAutumn = sekkiMonth >= 7 && sekkiMonth <= 9
+const isWinter = sekkiMonth >= 10 && sekkiMonth <= 12
+
+if (isSpring && index === 14) types.push('天赦日')        // 戊寅
+else if (isSummer && index === 30) types.push('天赦日')  // 甲午
+else if (isAutumn && index === 44) types.push('天赦日')  // 戊申
+else if (isWinter && index === 0) types.push('天赦日')   // 甲子
 
   // 己巳の日（60日に1度・弁財天縁日）
   if (index === 5) types.push('己巳の日')
