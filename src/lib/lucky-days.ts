@@ -80,22 +80,29 @@ const KAMIYOSHI = new Set([
   1,3,5,6,8,9,13,15,18,20,21,24,27,30,32,33,35,
   36,37,39,41,42,43,44,45,47,48,51,54,55,56,57,59
  ])
-// ── 六曜（大安）: 旧暦ベースの近似計算 ──
-// 年ごとの補正オフセット（1/1の六曜インデックスから逆算）
+// ── 六曜（大安）: 旧暦の月＋日から算出 ──
 // 0=先勝 1=友引 2=先負 3=仏滅 4=大安 5=赤口
-const ROKUYO_OFFSETS: Record<number, number> = {
-  2024: 5, // 2024/1/1 ≈ 友引
-  2025: 2, // 2025/1/1 ≈ 大安
-  2026: 5, // 2026/1/1 推定
-  2027: 2, // 2027/1/1 推定
-}
-
 function getRokuyo(date: Date): number {
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const offset = ROKUYO_OFFSETS[year] ?? 0
-  return (month + day + offset) % 6
+  const parts = new Intl.DateTimeFormat('en-US-u-ca-chinese', {
+    timeZone: 'Asia/Tokyo',
+    month: 'numeric',
+    day: 'numeric',
+  }).formatToParts(date)
+
+  const lunarMonth = Number.parseInt(
+    parts.find((p) => p.type === 'month')?.value ?? '',
+    10
+  )
+
+  const lunarDay = Number.parseInt(
+    parts.find((p) => p.type === 'day')?.value ?? '',
+    10
+  )
+
+  if (!Number.isFinite(lunarMonth) || !Number.isFinite(lunarDay)) return -1
+
+  const raw = (lunarMonth + lunarDay) % 6
+  return (raw + 4) % 6
 }
 
 // ─────────────────────────────────────────
