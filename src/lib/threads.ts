@@ -3,6 +3,9 @@ import { getSettings } from './settings'
 const BASE = 'https://graph.threads.net/v1.0'
 
 async function createAndPublish(userId: string, token: string, text: string, replyToId?: string): Promise<string> {
+   userId = userId.trim()
+  token = token.trim()
+  
   const body: Record<string, string> = { media_type: 'TEXT', text, access_token: token }
   if (replyToId) body.reply_to_id = replyToId
 
