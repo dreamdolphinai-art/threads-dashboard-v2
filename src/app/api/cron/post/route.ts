@@ -44,7 +44,10 @@ export async function GET(req: Request) {
       .where(eq(posts.id, post.id))
     return NextResponse.json({ ok: true, posted: true, threadsId })
   } catch (err) {
+    console.error('Threads投稿エラー:', err) 
     await db.update(posts)
+     
+      
       .set({ status: 'failed', updatedAt: new Date().toISOString() })
       .where(eq(posts.id, post.id))
     return NextResponse.json({ ok: false, error: String(err) }, { status: 500 })
