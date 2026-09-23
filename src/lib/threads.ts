@@ -16,7 +16,10 @@ async function createAndPublish(userId: string, token: string, text: string, rep
   })
   const { id: creationId, error: ce } = await createRes.json() as { id: string; error?: unknown }
   if (ce) throw new Error(`Threads create: ${JSON.stringify(ce)}`)
-
+   
+// Threads側で投稿コンテナの準備ができるまで待つ
+await new Promise((resolve) => setTimeout(resolve, 30000))
+   
   const publishRes = await fetch(`${BASE}/${userId}/threads_publish`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
